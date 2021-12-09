@@ -49,7 +49,7 @@ def collect_id():
         url2 = f"https://asia.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{username}/KR1?api_key={API_KEY}"
         try:
             req2 = requests.get(url2)
-            time.sleep(0.85)
+            time.sleep(0.9)
             req2 = response_checker(username, url2, req2)
             if not req2 == None: ## 기타 에러코드 발생시
                 puuid = req2.json()['puuid']
@@ -63,8 +63,8 @@ def collect_id():
         json.dump(puuids, f)
 
 
-def collect_match_id(league):
-    filename = f"{league}_puuid.json"
+def collect_match_id():
+    filename = f"puuids.json"
     with open(filename, "r") as f :
         user_list = json.load(f)
     
@@ -85,13 +85,13 @@ def collect_match_id(league):
 
     filename = "match_list.json"
     try:
-        with open(filename, "r") as f:
-            prior_match_list = set(json.load(f))
-        match_list.update(prior_match_list)
+        with open("done_"+filename, "r") as f:
+            done_match_list = set(json.load(f))
+        match_list = match_list - done_match_list
     except:
         None
 
-    match_list = sorted(list(match_list),reverse=True)
+    match_list = sorted(list(match_list))
     with open(filename, "w") as f:
         json.dump(match_list, f)
 
@@ -99,21 +99,29 @@ def collect_match_id(league):
 def collect_match_detail():
     filename = "match_list.json"
     with open(filename, "r") as f:
-        match_list = json.load(f)
+        match_list = set(json.load(f))
 
-    not_solo = set()
+    try:
+        with open("not_solo.json", "r") as f:
+            not_solo = set(json.load(f))
+    except:
+        not_solo = set()
+    
+    match_list = match_list - not_solo
+    done_match = set()
     match_detail = []
     count = 0
     for match in tqdm(match_list):
         url = f"https://asia.api.riotgames.com/lol/match/v5/matches/{match}?api_key={API_KEY}"
         try:
             req = requests.get(url)
-            time.sleep(0.82)
+            time.sleep(0.83)
             req = response_checker(match, url, req)
             if not req == None:
                 data = req.json()
                 if data["info"]["queueId"] == 420:
                     match_detail.append(data)
+                    done_match.add(match)
                 else:
                     count += 1
                     not_solo.add(match)
@@ -122,15 +130,28 @@ def collect_match_detail():
             print(match+"에서 예외 발생", req.status_code)
             continue
 
-    new_match_list = sorted(list(set(match_list)-not_solo), reverse=True)
-    with open(filename, "w") as f:
-        json.dump(new_match_list, f)                
+    with open("match_detail.json", "r") as f:
+        prior_match_detail = json.load(f)
+        prior_match_detail.extend(match_detail)
+    
+    with open("match_detail.json", "w") as f:
+        json.dump(prior_match_detail, f)
 
-    with open("match_detail.json", "a") as f:
-        json.dump(match_detail, f)
+    with open("not_solo.json", "w") as f:
+        json.dump(list(not_solo), f)
+
+    with open("done_"+filename, "r") as f:
+        done_match_list = set(json.load(f))
+    done_match_list.update(done_match)
+    new_match_list = sorted(list(done_match_list))
+
+    with open("done_"+filename, "w") as f:
+        json.dump(new_match_list, f)
+
+
 
 
 if __name__ == "__main__":
     collect_id()
-    # collect_match_id()
-    # collect_match_detail()
+    collect_match_id()
+    collect_match_detail()

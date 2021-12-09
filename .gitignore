@@ -1,6 +1,9 @@
 # db files
 *.json
+test.py
 
+# api file
+api_info.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

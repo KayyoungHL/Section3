@@ -74,6 +74,16 @@ from api_info import API_KEY
 
 filename = "match_list.json"
 with open(filename, "r") as f:
-    match_list = json.load(f)
+    match_list = set(json.load(f))
 
-print(len(match_list))
+with open("done_"+filename, "r") as f:
+    done_match_list = set(json.load(f))
+
+with open("match_detail.json", "r") as f:
+    print("데이터",len(json.load(f)))
+
+
+# with open("done_match_list.json", "w") as f:
+#     json.dump(sorted(new_done_match_list), f)
+print(len(match_list),len(done_match_list))
+print(len(match_list|done_match_list))
