@@ -1,9 +1,10 @@
 # db files
 *.json
+*.csv
 test.py
 
 # api file
-api_info.py
+personal_info.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

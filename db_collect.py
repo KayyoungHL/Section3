@@ -5,7 +5,7 @@ import time
 import pandas as pd
 from tqdm import tqdm
 
-from api_info import API_KEY
+from personal_info import API_KEY
 
 
 def response_checker(data, url, request):
@@ -34,6 +34,7 @@ def response_checker(data, url, request):
 
 
 def collect_id():
+    print("User ID collecting...")
     leagues = ["challenger", "grandmaster"]
     summoner_id = [] ## 저장할 사전
     for league in leagues:
@@ -42,20 +43,21 @@ def collect_id():
         entries = req.json()['entries']
 
         for i in entries:
-            summoner_id.append(i['summonerName'])
+            summoner_id.append(i['summonerId'])
 
     puuids = {}
-    for username in tqdm(summoner_id):
-        url2 = f"https://asia.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{username}/KR1?api_key={API_KEY}"
+    for user_id in tqdm(summoner_id):
+        url2 = f"https://kr.api.riotgames.com/lol/summoner/v4/summoners/{user_id}?api_key={API_KEY}"
+        
         try:
             req2 = requests.get(url2)
             time.sleep(0.9)
-            req2 = response_checker(username, url2, req2)
-            if not req2 == None: ## 기타 에러코드 발생시
-                puuid = req2.json()['puuid']
-                puuids[username] = puuid
+            req2 = response_checker(user_id, url2, req2)
+            if not req2 == None: ## 기타 에러코드 발생 안할 시
+                puuids[req2.json()['name']] = req2.json()['puuid']
         except: # 예외발생. 주로 타임아웃!
-            print(username+"에서 예외 발생", req2.status_code)
+            print()
+            print(user_id+"에서 예외 발생", req2.status_code)
             continue
 
     filename = "puuids.json"
@@ -64,13 +66,14 @@ def collect_id():
 
 
 def collect_match_id():
+    print("Match ID collecting...")
     filename = f"puuids.json"
     with open(filename, "r") as f :
         user_list = json.load(f)
     
     match_list = set()
     for puuid in tqdm(user_list.values()):
-        url = f"https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?api_key={API_KEY}"
+        url = f"https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?queue=420&type=ranked&start=0&count=20&api_key={API_KEY}"
         try:
             req = requests.get(url)
             time.sleep(1)
@@ -80,6 +83,7 @@ def collect_match_id():
                 match = set(req.json())
                 match_list.update(match)
         except:
+            print()
             print(puuid+"에서 예외 발생", req.status_code)
             continue
 
@@ -97,20 +101,14 @@ def collect_match_id():
 
 
 def collect_match_detail():
+    print("Match detail collecting...")
     filename = "match_list.json"
     with open(filename, "r") as f:
         match_list = set(json.load(f))
-
-    try:
-        with open("not_solo.json", "r") as f:
-            not_solo = set(json.load(f))
-    except:
-        not_solo = set()
     
-    match_list = match_list - not_solo
     done_match = set()
     match_detail = []
-    count = 0
+
     for match in tqdm(match_list):
         url = f"https://asia.api.riotgames.com/lol/match/v5/matches/{match}?api_key={API_KEY}"
         try:
@@ -118,27 +116,15 @@ def collect_match_detail():
             time.sleep(0.83)
             req = response_checker(match, url, req)
             if not req == None:
-                data = req.json()
-                if data["info"]["queueId"] == 420:
-                    match_detail.append(data)
-                    done_match.add(match)
-                else:
-                    count += 1
-                    not_solo.add(match)
-                    print("\r솔로랭크 겜 아니네!", count, data["info"]["queueId"])
+                match_detail.append(req.json())
+                done_match.add(match)
         except:
+            print()
             print(match+"에서 예외 발생", req.status_code)
             continue
-
-    with open("match_detail.json", "r") as f:
-        prior_match_detail = json.load(f)
-        prior_match_detail.extend(match_detail)
     
-    with open("match_detail.json", "w") as f:
-        json.dump(prior_match_detail, f)
-
-    with open("not_solo.json", "w") as f:
-        json.dump(list(not_solo), f)
+    from db_update import db_upload
+    db_upload(match_detail)
 
     with open("done_"+filename, "r") as f:
         done_match_list = set(json.load(f))
@@ -147,8 +133,6 @@ def collect_match_detail():
 
     with open("done_"+filename, "w") as f:
         json.dump(new_match_list, f)
-
-
 
 
 if __name__ == "__main__":
