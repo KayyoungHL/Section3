@@ -73,7 +73,7 @@ def collect_match_id():
     
     match_list = set()
     for puuid in tqdm(user_list.values()):
-        url = f"https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?queue=420&type=ranked&start=0&count=20&api_key={API_KEY}"
+        url = f"https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?queue=420&type=ranked&start=0&count=50&api_key={API_KEY}"
         try:
             req = requests.get(url)
             time.sleep(1)
@@ -136,6 +136,6 @@ def collect_match_detail():
 
 
 if __name__ == "__main__":
-    collect_id()
-    collect_match_id()
+    # collect_id()
+    # collect_match_id()
     collect_match_detail()

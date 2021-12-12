@@ -3,7 +3,7 @@ import json
 from personal_info import HOST, USER, PASSWORD
 
 
-def db_upload(data):
+def db_upload(data, many = True):
 
     DATABASE_NAME   = 'lol'
     COLLECTION_NAME = 'match_detail'
@@ -16,7 +16,10 @@ def db_upload(data):
     database = client[DATABASE_NAME]
     collection = database[COLLECTION_NAME]
     print("Mongo DB uploading...")
-    collection.insert_many(documents=data)
+    if many:
+        collection.insert_many(documents=data)
+    else:
+        collection.insert_one(document=data)
     print("Finish")
 
 if __name__ == "__main__": pass
