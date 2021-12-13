@@ -18,7 +18,7 @@ def make_db_csv():
     collection = database[COLLECTION_NAME]
 
     # col = [
-    #     "MatchID", "GameVersion",
+    #     "GameID", "GameVersion",
     #     "bTopID", "bTopChamp", "bTopPerkPrime", "bTopPerkPrime0", "bTopPerkPrime1", "bTopPerkPrime2", "bTopPerkPrime3", "bTopPerkSub", "bTopPerkSub0", "bTopPerkSub1", "bTopPerkStat0", "bTopPerkStat1", "bTopPerkStat2",
     #     "bJugID", "bJugChamp", "bJugPerkPrime", "bJugPerkPrime0", "bJugPerkPrime1", "bJugPerkPrime2", "bJugPerkPrime3", "bJugPerkSub", "bJugPerkSub0", "bJugPerkSub1", "bJugPerkStat0", "bJugPerkStat1", "bJugPerkStat2",
     #     "bMidID", "bMidChamp", "bMidPerkPrime", "bMidPerkPrime0", "bMidPerkPrime1", "bMidPerkPrime2", "bMidPerkPrime3", "bMidPerkSub", "bMidPerkSub0", "bMidPerkSub1", "bMidPerkStat0", "bMidPerkStat1", "bMidPerkStat2",
@@ -52,7 +52,7 @@ def make_db_csv():
 
     data = []
     for i in tqdm(collection.find()):
-        # data.append({"MatchID":i[m]["matchId"], "GameVersion":i[f]["gameVersion"],
+        # data.append({"GameID":i[f]["gameId"], "GameVersion":i[f]["gameVersion"],
         # "bTopID":i[f][ps][0][pu], "bTopChamp":i[f][ps][0][ch], "bTopSpell0":i[f][ps][0]["summoner1Id"], "bTopSpell1":i[f][ps][0]["summoner2Id"], "bTopPerkPrime":i[f][ps][0][pk][st][0][s], "bTopPerkPrime0":i[f][ps][0][pk][st][0][sl][0][p], "bTopPerkPrime1":i[f][ps][0][pk][st][0][sl][1][p], "bTopPerkPrime2":i[f][ps][0][pk][st][0][sl][2][p], "bTopPerkPrime3":i[f][ps][0][pk][st][0][sl][3][p], "bTopPerkSub":i[f][ps][0][pk][st][1][s], "bTopPerkSub0":i[f][ps][0][pk][st][1][sl][0][p], "bTopPerkSub1":i[f][ps][0][pk][st][1][sl][1][p], "bTopPerkStat0":i[f][ps][0][pk][sp][de], "bTopPerkStat1":i[f][ps][0][pk][sp][fl], "bTopPerkStat2":i[f][ps][0][pk][sp][of],
         # "bJugID":i[f][ps][1][pu], "bJugChamp":i[f][ps][1][ch], "bJugSpell0":i[f][ps][1]["summoner1Id"], "bJugSpell1":i[f][ps][1]["summoner2Id"], "bJugPerkPrime":i[f][ps][1][pk][st][0][s], "bJugPerkPrime0":i[f][ps][1][pk][st][0][sl][0][p], "bJugPerkPrime1":i[f][ps][1][pk][st][0][sl][1][p], "bJugPerkPrime2":i[f][ps][1][pk][st][0][sl][2][p], "bJugPerkPrime3":i[f][ps][1][pk][st][0][sl][3][p], "bJugPerkSub":i[f][ps][1][pk][st][1][s], "bJugPerkSub0":i[f][ps][1][pk][st][1][sl][0][p], "bJugPerkSub1":i[f][ps][1][pk][st][1][sl][1][p], "bJugPerkStat0":i[f][ps][1][pk][sp][de], "bJugPerkStat1":i[f][ps][1][pk][sp][fl], "bJugPerkStat2":i[f][ps][1][pk][sp][of],
         # "bMidID":i[f][ps][2][pu], "bMidChamp":i[f][ps][2][ch], "bMicSpell0":i[f][ps][2]["summoner1Id"], "bMicSpell1":i[f][ps][2]["summoner2Id"], "bMidPerkPrime":i[f][ps][2][pk][st][0][s], "bMidPerkPrime0":i[f][ps][2][pk][st][0][sl][0][p], "bMidPerkPrime1":i[f][ps][2][pk][st][0][sl][1][p], "bMidPerkPrime2":i[f][ps][2][pk][st][0][sl][2][p], "bMidPerkPrime3":i[f][ps][2][pk][st][0][sl][3][p], "bMidPerkSub":i[f][ps][2][pk][st][1][s], "bMidPerkSub0":i[f][ps][2][pk][st][1][sl][0][p], "bMidPerkSub1":i[f][ps][2][pk][st][1][sl][1][p], "bMidPerkStat0":i[f][ps][2][pk][sp][de], "bMidPerkStat1":i[f][ps][2][pk][sp][fl], "bMidPerkStat2":i[f][ps][2][pk][sp][of],
@@ -75,7 +75,7 @@ def make_db_csv():
         # "rBan5":i[f][t][1][b][4][ch],
         # "bWin":1 if i[f][t][0]["win"] else 0,
         # "rWin":1 if i[f][t][1]["win"] else 0})
-        data.append({"MatchID":i[m]["matchId"], "GameVersion":i[f]["gameVersion"],
+        data.append({"GameID":i[f]["gameId"], "GameVersion":i[f]["gameVersion"],
         "bTopChamp":i[f][ps][0][ch], "bTopSpell0":i[f][ps][0]["summoner1Id"], "bTopSpell1":i[f][ps][0]["summoner2Id"], "bTopPerkPrime":i[f][ps][0][pk][st][0][s], "bTopPerkPrime0":i[f][ps][0][pk][st][0][sl][0][p], "bTopPerkSub":i[f][ps][0][pk][st][1][s],
         "bJugChamp":i[f][ps][1][ch], "bJugSpell0":i[f][ps][1]["summoner1Id"], "bJugSpell1":i[f][ps][1]["summoner2Id"], "bJugPerkPrime":i[f][ps][1][pk][st][0][s], "bJugPerkPrime0":i[f][ps][1][pk][st][0][sl][0][p], "bJugPerkSub":i[f][ps][1][pk][st][1][s],
         "bMidChamp":i[f][ps][2][ch], "bMicSpell0":i[f][ps][2]["summoner1Id"], "bMicSpell1":i[f][ps][2]["summoner2Id"], "bMidPerkPrime":i[f][ps][2][pk][st][0][s], "bMidPerkPrime0":i[f][ps][2][pk][st][0][sl][0][p], "bMidPerkSub":i[f][ps][2][pk][st][1][s],
@@ -92,7 +92,7 @@ def make_db_csv():
 
 
 
-    df = pd.DataFrame(data, columns=data[0].keys()).sort_values("MatchID").reset_index(drop=True).set_index("MatchID")
+    df = pd.DataFrame(data, columns=data[0].keys()).sort_values("GameID").reset_index(drop=True).set_index("GameID")
     print(df.head())
 
     df.to_csv("data.csv")
@@ -211,11 +211,11 @@ def predict(model, X_test, y_test):
 if __name__ == "__main__":
 
     print("Making db as CSV file...")
-    # make_db_csv()
+    make_db_csv()
     print("data loading...")
-    data = pd.read_csv("data.csv", index_col="MatchID")
+    data = pd.read_csv("data.csv", index_col="GameID")
     model = rf_model(data)
-    # data = pd.read_csv("df_ohe1.csv", index_col="MatchID")
+    # data = pd.read_csv("df_ohe1.csv", index_col="GameID")
     # model = deep_model(data)
     with open("rf_model.pkl", "bw") as f:
         pickle.dump(model, f)
